@@ -20,7 +20,13 @@ const Counter: React.FC<Props> = ({ smartAccount, address, provider }) => {
   const [counter, setCounter] = useState(0);
   const [lastCaller, setLastCaller] = useState("");
   const counterAddress = "0x671085b558922f765c83099376ac63a4646f61ad";
-  const contract = useRef<ethers.Contract>();
+  const [contract, setContract] = useState<ethers.Contract>();
+
+  useEffect(() => {
+    if (provider && smartAccount) {
+      getContract().then((r) => r);
+    }
+  }, [smartAccount, provider]);
 
   useEffect(() => {
     const runEvent = (from: any, to: any, value: any, event: any) => {
@@ -32,27 +38,25 @@ const Counter: React.FC<Props> = ({ smartAccount, address, provider }) => {
       };
       console.log(transferEvent);
     };
-    if (provider && smartAccount) {
-      contract.current = new ethers.Contract(counterAddress, abi, provider);
 
-      getCount();
-      getLastCaller();
+    if (!contract) return;
+    getCount();
+    getLastCaller();
 
-      contract.current.on("UpdateNumber", runEvent);
-    }
+    // console.log("contract", contract._checkRunningEvents());
 
-    return () => {
-      if (contract.current) {
-        contract.current.off("UpdateNumber", runEvent);
-      }
-    };
-  }, [smartAccount, provider]);
+    contract.on("UpdateNumber", runEvent);
+
+    // return () => {
+    //   contract.off("UpdateNumber", runEvent);
+    // };
+  }, [contract]);
 
   const getContract = async () =>
-    new ethers.Contract(counterAddress, abi, provider);
+    setContract(new ethers.Contract(counterAddress, abi, provider));
   const handleIncrease = async () => {
     try {
-      const tx = await (await getContract()).populateTransaction.increase()!;
+      const tx = await contract?.populateTransaction.increase()!;
       const tx1 = {
         to: counterAddress,
         data: tx.data,
@@ -87,7 +91,7 @@ const Counter: React.FC<Props> = ({ smartAccount, address, provider }) => {
 
   const getCount = async () => {
     try {
-      const tx = await contract.current?.number();
+      const tx = await contract?.number();
       setCounter(Number(tx));
     } catch (error) {
       console.error(error);
@@ -96,7 +100,7 @@ const Counter: React.FC<Props> = ({ smartAccount, address, provider }) => {
 
   const getLastCaller = async () => {
     try {
-      const tx = await contract.current?.lastCaller();
+      const tx = await contract?.lastCaller();
       setLastCaller(tx);
     } catch (error) {
       console.error(error);
@@ -105,9 +109,7 @@ const Counter: React.FC<Props> = ({ smartAccount, address, provider }) => {
 
   const setNumber = async () => {
     try {
-      const tx = await (
-        await getContract()
-      ).populateTransaction.setNumber(235)!;
+      const tx = await contract?.populateTransaction.setNumber(235)!;
       const tx1 = {
         to: counterAddress,
         data: tx.data,
