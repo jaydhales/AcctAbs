@@ -4,7 +4,7 @@ pragma solidity ^0.8.13;
 import "@openzeppelin/contracts/metatx/ERC2771Context.sol";
 
 contract Counter is ERC2771Context(0xE041608922d06a4F26C0d4c27d8bCD01daf1f792) {
-    event UpdateNumber(uint256 newNum, address caller);
+    event UpdateNumber(uint256 indexed newNum, address indexed caller);
 
     uint256 public number;
     address public lastCaller;
