@@ -19,7 +19,7 @@ interface Props {
 const Counter: React.FC<Props> = ({ smartAccount, address, provider }) => {
   const [counter, setCounter] = useState(0);
   const [lastCaller, setLastCaller] = useState("");
-  const counterAddress = "0xAFDc553394ccA5371eE4299F85bEA27f6Fe7a014";
+  const counterAddress = "0x33AbDF461BeE7Fd576d723e25D617d21cfeeD0C3";
 
   useEffect(() => {
     if (smartAccount) {
