@@ -27,6 +27,7 @@ const Counter: React.FC<Props> = ({ smartAccount, address, provider }) => {
       getLastCaller();
     }
   }, [smartAccount]);
+
   const getContract = async (read?: boolean) =>
     new ethers.Contract(
       counterAddress,

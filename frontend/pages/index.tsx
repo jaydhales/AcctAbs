@@ -1,6 +1,4 @@
 import Head from "next/head";
-import Image from "next/image";
-import { Inter } from "next/font/google";
 import styles from "@/styles/Home.module.css";
 import { useEffect, useState } from "react";
 import { IBundler, Bundler } from "@biconomy/bundler";
@@ -42,12 +40,12 @@ export default function Home() {
   const connect = async () => {
     try {
       let signer = null;
-      let provider;
+      let _provider;
 
-      provider = new ethers.providers.Web3Provider(window.ethereum);
-      signer = provider.getSigner();
+      _provider = new ethers.providers.Web3Provider(window.ethereum);
+      signer = _provider.getSigner();
 
-      setProvider(provider);
+      setProvider(_provider);
 
       const ecModule = await ECDSAOwnershipValidationModule.create({
         //@ts-ignore
@@ -63,6 +61,7 @@ export default function Home() {
         defaultValidationModule: ecModule,
         activeValidationModule: ecModule,
       });
+
       setAddress(await biconomySmartAccount.getAccountAddress());
       setSmartAccount(biconomySmartAccount);
       setLoading(false);
