@@ -1,0 +1,13 @@
+[profile.default]
+src = "src"
+out = "out"
+libs = ["lib"]
+
+[rpc_endpoints]
+goerli="${GOERLI_RPC}"
+
+
+[etherscan]
+goerli={ key = "${ETHERSCAN_API}" }
+
+# See more config options https://github.com/foundry-rs/foundry/blob/master/crates/config/README.md#all-options
